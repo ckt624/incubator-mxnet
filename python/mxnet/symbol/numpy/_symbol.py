@@ -30,7 +30,60 @@ from .._internal import _set_np_symbol_class
 from . import _internal as _npi
 
 __all__ = ['zeros', 'ones', 'maximum', 'minimum', 'stack', 'concatenate', 'arange', 'argmax',
-           'clip', 'add', 'subtract', 'multiply', 'divide', 'mod', 'power']
+           'clip', 'add', 'subtract', 'multiply', 'divide', 'mod', 'power', 'tensordot']
+
+@set_module('mxnet.symbol.numpy')
+def tensordot(a, b, axes = 2):
+    """Returns the tensor dot product of two arrays along specified axes.
+    This is equivalent to compute dot product along the specified axes which
+    are treated as one axis by reshaping.
+    Args:
+        a (numpy.array): The first argument.
+        b (numpy.array): The second argument.
+        axes:
+            - If it is an integer, then ``axes`` axes at the last of ``a`` and
+              the first of ``b`` are used.
+            - If it is a pair of sequences of integers, then these two
+              sequences specify the list of axes for ``a`` and ``b``. The
+              corresponding axes are paired for sum-product.
+    Returns:
+        numpy.array: The tensor dot product of ``a`` and ``b`` along the
+        axes specified by ``axes``.
+    """
+    import collections
+
+    if (a.ndim < 1) or (b.ndim < 1):
+        raise ValueError('An input is zero-dim')
+
+    if isinstance(axes, collections.abc.Sequence):
+        if len(axes) != 2:
+            raise ValueError('Axes must consist of two arrays.')
+        a_axes_summed, b_axes_summed = axes
+        if _np.isscalar(a_axes_summed):
+            a_axes_summed = a_axes_summed,
+        if _np.isscalar(b_axes_summed):
+            b_axes_summed = b_axes_summed,
+    else:
+        a_axes_summed = [i + a.ndim - axes for i in range(axes)]
+        b_axes_summed = [i for i in range(axes)]
+
+    if len(a_axes_summed) != len(b_axes_summed):
+        raise ValueError('Axes length mismatch') 
+
+    a_axes_remained = []
+    for i in range(a.ndim):
+        if not (i in a_axes_summed):
+            a_axes_remained.append(i)
+    a_axes = a_axes_remained[:] + a_axes_summed[:]
+    
+    b_axes_remained = []
+    for i in range(b.ndim):
+        if not (i in b_axes_summed):
+            b_axes_remained.append(i)
+    b_axes = b_axes_summed[:] + b_axes_remained[:]
+
+    return _npi.tensordot(a, b, a_axes, a_axes_remained, a_axes_summed, b_axes, 
+      b_axes_remained, b_axes_summed)
 
 
 @set_module('mxnet.symbol.numpy')
