@@ -140,11 +140,6 @@ def arccos(x, out=None, where=True, **kwargs):
 
     The inverse cos is also known as acos or cos^-1.
 
-    References
-
-    M. Abramowitz and I.A. Stegun, “Handbook of Mathematical Functions”, 10th printing, 
-    1964, pp. 79. http://www.math.sfu.ca/~cbm/aands/
-
     Examples
 
     We expect the arccos of 1 to be 0, and of -1 to be pi:
