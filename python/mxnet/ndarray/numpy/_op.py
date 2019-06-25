@@ -28,7 +28,133 @@ from ..ndarray import NDArray
 __all__ = ['zeros', 'ones', 'maximum', 'minimum', 'stack', 'arange', 'argmax',
            'add', 'subtract', 'multiply', 'divide', 'mod', 'power', 'concatenate',
            'clip', 'split', 'swapaxes', 'expand_dims', 'tile', 'linspace',
-           'sin', 'cos', 'sinh', 'cosh', 'log10', 'sqrt', 'tensordot']
+           'sin', 'cos', 'sinh', 'cosh', 'log10', 'sqrt', 'tensordot', 'absolute', 'cbrt', 
+           'arccos']
+
+@set_module('mxnet.ndarray.numpy')
+def absolute(x, out=None, where=True, **kwargs):
+    r"""Calculate the absolute value element-wise.
+    np.abs is a shorthand for this function.
+
+    Parameters:	
+    x : array_like
+    Input array.
+
+    out : ndarray, None, or tuple of ndarray and None, optional
+    A location into which the result is stored. If provided, it must have a shape 
+    that the inputs broadcast to. If not provided or None, a freshly-allocated array is returned. 
+    A tuple (possible only as a keyword argument) must have length equal to the number of outputs.
+
+    where : array_like, optional
+    Values of True indicate to calculate the ufunc at that position, values of False indicate to 
+    leave the value in the output alone.
+
+    **kwargs
+    For other keyword-only arguments, see the ufunc docs.
+
+    Returns:	
+    absolute : ndarray
+    An ndarray containing the absolute value of each element in x. For complex input, a + ib, 
+    the absolute value is \sqrt{ a^2 + b^2 }. This is a scalar if x is a scalar.
+    
+    Examples:
+    >>> x = np.array([-1.2, 1.2])
+    >>> np.absolute(x)
+    array([ 1.2,  1.2])
+    """
+    return _unary_func_helper(x, _npi.abs, _np.abs, out=out, **kwargs)
+
+@set_module('mxnet.ndarray.numpy')
+def cbrt(x, out=None, where=True, **kwargs):
+    r"""Return the cube-root of an array, element-wise.
+
+    Parameters:	
+    x : array_like
+    The values whose cube-roots are required.
+
+    out : ndarray, None, or tuple of ndarray and None, optional
+    A location into which the result is stored. If provided, it must have a shape that the 
+    inputs broadcast to. If not provided or None, a freshly-allocated array is returned. 
+    A tuple (possible only as a keyword argument) must have length equal to the number of outputs.
+
+    where : array_like, optional
+    Values of True indicate to calculate the ufunc at that position, values of False indicate 
+    to leave the value in the output alone.
+
+    **kwargs
+    For other keyword-only arguments, see the ufunc docs.
+
+    Returns:	
+    y : ndarray
+    An array of the same shape as x, containing the cube cube-root of each element in x. 
+    If out was provided, y is a reference to it. This is a scalar if x is a scalar.
+
+    Examples
+
+    >>>
+    >>> np.cbrt([1,8,27])
+    array([ 1.,  2.,  3.])
+    """
+    return _unary_func_helper(x, _npi.cbrt, _np.cbrt, out=out, **kwargs)
+
+@set_module('mxnet.ndarray.numpy')
+def arccos(x, out=None, where=True, **kwargs):
+    r"""Trigonometric inverse cosine, element-wise.
+    The inverse of cos so that, if y = cos(x), then x = arccos(y).
+
+    Parameters:	
+    x : array_like
+    x-coordinate on the unit circle. For real arguments, the domain is [-1, 1].
+
+    out : ndarray, None, or tuple of ndarray and None, optional
+    A location into which the result is stored. If provided, it must have a shape that 
+    the inputs broadcast to. If not provided or None, a freshly-allocated array is returned. 
+    A tuple (possible only as a keyword argument) must have length equal to the number of outputs.
+
+    where : array_like, optional
+    Values of True indicate to calculate the ufunc at that position, values of False indicate 
+    to leave the value in the output alone.
+
+    **kwargs
+    For other keyword-only arguments, see the ufunc docs.
+
+    Returns:	
+    angle : ndarray
+    The angle of the ray intersecting the unit circle at the given x-coordinate in radians [0, pi]. 
+    This is a scalar if x is a scalar.
+
+    See also
+    cos, arctan, arcsin, emath.arccos
+
+    Notes
+
+    arccos is a multivalued function: for each x there are infinitely many numbers z such that 
+    cos(z) = x. The convention is to return the angle z whose real part lies in [0, pi].
+
+    For real-valued input data types, arccos always returns real output. 
+    For each value that cannot be expressed as a real number or infinity, it yields nan and sets 
+    the invalid floating point error flag.
+
+    For complex-valued input, arccos is a complex analytic function that has branch cuts [-inf, -1] 
+    and [1, inf] and is continuous from above on the former and from below on the latter.
+
+    The inverse cos is also known as acos or cos^-1.
+
+    References
+
+    M. Abramowitz and I.A. Stegun, “Handbook of Mathematical Functions”, 10th printing, 
+    1964, pp. 79. http://www.math.sfu.ca/~cbm/aands/
+
+    Examples
+
+    We expect the arccos of 1 to be 0, and of -1 to be pi:
+
+    >>>
+    >>> np.arccos([1, -1])
+    array([ 0.        ,  3.14159265])
+    """
+    return _unary_func_helper(x, _npi.arccos, _np.arccos, out=out, **kwargs)
+
 
 @set_module('mxnet.ndarray.numpy')
 def tensordot(a, b, axes = 2):
