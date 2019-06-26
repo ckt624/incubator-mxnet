@@ -32,7 +32,7 @@ __all__ = ['zeros', 'ones', 'maximum', 'minimum', 'stack', 'arange', 'argmax',
            'arccos']
 
 @set_module('mxnet.ndarray.numpy')
-def absolute(x, out=None, where=True, **kwargs):
+def absolute(x, out=None, **kwargs):
     r"""Calculate the absolute value element-wise.
     np.abs is a shorthand for this function.
 
@@ -44,10 +44,6 @@ def absolute(x, out=None, where=True, **kwargs):
     A location into which the result is stored. If provided, it must have a shape 
     that the inputs broadcast to. If not provided or None, a freshly-allocated array is returned. 
     A tuple (possible only as a keyword argument) must have length equal to the number of outputs.
-
-    where : array_like, optional
-    Values of True indicate to calculate the ufunc at that position, values of False indicate to 
-    leave the value in the output alone.
 
     **kwargs
     For other keyword-only arguments, see the ufunc docs.
@@ -65,7 +61,7 @@ def absolute(x, out=None, where=True, **kwargs):
     return _unary_func_helper(x, _npi.abs, _np.abs, out=out, **kwargs)
 
 @set_module('mxnet.ndarray.numpy')
-def cbrt(x, out=None, where=True, **kwargs):
+def cbrt(x, out=None, **kwargs):
     r"""Return the cube-root of an array, element-wise.
 
     Parameters:	
@@ -77,10 +73,6 @@ def cbrt(x, out=None, where=True, **kwargs):
     inputs broadcast to. If not provided or None, a freshly-allocated array is returned. 
     A tuple (possible only as a keyword argument) must have length equal to the number of outputs.
 
-    where : array_like, optional
-    Values of True indicate to calculate the ufunc at that position, values of False indicate 
-    to leave the value in the output alone.
-
     **kwargs
     For other keyword-only arguments, see the ufunc docs.
 
@@ -91,14 +83,13 @@ def cbrt(x, out=None, where=True, **kwargs):
 
     Examples
 
-    >>>
     >>> np.cbrt([1,8,27])
     array([ 1.,  2.,  3.])
     """
     return _unary_func_helper(x, _npi.cbrt, _np.cbrt, out=out, **kwargs)
 
 @set_module('mxnet.ndarray.numpy')
-def arccos(x, out=None, where=True, **kwargs):
+def arccos(x, out=None, **kwargs):
     r"""Trigonometric inverse cosine, element-wise.
     The inverse of cos so that, if y = cos(x), then x = arccos(y).
 
@@ -110,10 +101,6 @@ def arccos(x, out=None, where=True, **kwargs):
     A location into which the result is stored. If provided, it must have a shape that 
     the inputs broadcast to. If not provided or None, a freshly-allocated array is returned. 
     A tuple (possible only as a keyword argument) must have length equal to the number of outputs.
-
-    where : array_like, optional
-    Values of True indicate to calculate the ufunc at that position, values of False indicate 
-    to leave the value in the output alone.
 
     **kwargs
     For other keyword-only arguments, see the ufunc docs.
@@ -144,7 +131,6 @@ def arccos(x, out=None, where=True, **kwargs):
 
     We expect the arccos of 1 to be 0, and of -1 to be pi:
 
-    >>>
     >>> np.arccos([1, -1])
     array([ 0.        ,  3.14159265])
     """
@@ -557,6 +543,12 @@ def divide(x1, x2, out=None):
     -------
     out : ndarray or scalar
         This is a scalar if both x1 and x2 are scalars.
+
+    Examples
+    -------
+    >>> x = np.array([1,2])
+    >>> np.divide(3, x)
+    array([3. , 1.5])
     """
     return _ufunc_helper(x1, x2, _npi.true_divide, _np.divide, _npi.true_divide_scalar,
                          _npi.rtrue_divide_scalar, out)
