@@ -171,6 +171,19 @@ def tensordot(a, b, axes = 2):
     Returns:
         numpy.array: The tensor dot product of ``a`` and ``b`` along the
         axes specified by ``axes``.
+
+    Example:
+        >>> a = np.arange(60.).reshape(3,4,5)
+        >>> b = np.arange(24.).reshape(4,3,2)
+        >>> c = np.tensordot(a,b, axes=([1,0],[0,1]))
+        >>> c.shape
+        (5, 2)
+        >>> c
+        array([[ 4400.,  4730.],
+            [ 4532.,  4874.],
+            [ 4664.,  5018.],
+            [ 4796.,  5162.],
+            [ 4928.,  5306.]])
     """
     import collections
 
