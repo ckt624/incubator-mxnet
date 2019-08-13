@@ -48,3 +48,33 @@ def vadd_gpu(dtype, ndim):
     s[C].bind(bx, tvm.thread_axis("blockIdx.x"))
     s[C].bind(tx, tvm.thread_axis("threadIdx.x"))
     return s, [A, B, C]
+
+def compute_kron(dtype, ndim):
+    A = tvm.placeholder([tvm.var() for _ in range(ndim)], name='A', dtype=dtype)
+    B = tvm.placeholder([tvm.var() for _ in range(ndim)], name='B', dtype=dtype)
+    C = tvm.compute([tvm.var() for _ in range(ndim)], lambda *index: A[(index[i] // B.shape[i]
+       for i in range(ndim))] * B[(index[i] % B.shape[i] for i in range(ndim))], name='C')
+    s = tvm.create_schedule(C.op)
+    return s, A, B, C
+
+@defop(name="kron", target="cpu", auto_broadcast=True,
+       dtype=AllTypes, ndim=list(range(1, 6)))
+def kron(dtype, ndim):
+    s, A, B, C = compute_kron(dtype, ndim)
+    axes = [axis for axis in C.op.axis]
+    fused = s[C].fuse(*axes)
+    s[C].parallel(fused)
+
+    return s, [A, B, C]
+
+@defop(name="cuda_kron", target="cuda", auto_broadcast=True,
+       dtype=["float32", "float64"], ndim=list(range(1, 6)))
+def kron_gpu(dtype, ndim):
+    s, A, B, C = compute_kron(dtype, ndim)
+    s = tvm.create_schedule(C.op)
+    axes = [axis for axis in C.op.axis]
+    fused = s[C].fuse(*axes)
+    bx, tx = s[C].split(fused, factor=64)
+    s[C].bind(bx, tvm.thread_axis("blockIdx.x"))
+    s[C].bind(tx, tvm.thread_axis("threadIdx.x"))
+    return s, [A, B, C]
